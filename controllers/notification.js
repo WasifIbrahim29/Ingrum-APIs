@@ -12,7 +12,7 @@ exports.postNotification = (req, res, next) => {
     console.log(token);
 
     const notificationToken= NotificationToken({
-        user: ingrumCode,
+        ingrumCode: ingrumCode,
         notificationToken: token
     })
 
@@ -22,17 +22,17 @@ exports.postNotification = (req, res, next) => {
 
     
 exports.getNotification = (req, res, next) => {
-    const _id=req.params._id;
+    const ingrumCode=req.params.ingrumCode;
 
     console.log('I am here');
 
     var usersProjection = { 
-        user: false,
+        ingrumCode: false,
         __v: false,
         _id:false
     };
 
-    NotificationToken.findOne({user : _id},usersProjection)
+    NotificationToken.findOne({ingrumCode : ingrumCode},usersProjection)
     .then(notificationToken=>{
         if(notificationToken){
             res.status(200).json({

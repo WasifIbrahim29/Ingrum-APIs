@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+var jwt= require('jsonwebtoken');
+var config=require('../')
 
 const User = require('../models/user');
 const Token = require('../models/token');
@@ -23,7 +25,8 @@ exports.login = (req, res, next) => {
     const password = req.body.password;
     console.log(email);
     var usersProjection = { 
-        __v: false
+        __v: false,
+        _id:false
 
     };
     User.findOne({ email: email },usersProjection)
@@ -40,7 +43,8 @@ exports.login = (req, res, next) => {
             if (!user.isVerified) return res.status(401).send({ message: 'Your account has not been verified.' });
             var newUsersProjection = { 
                 __v: false,
-                isVerified:false
+                isVerified:false,
+                _id:false
         
             };
             User.findOne({ email: email },newUsersProjection)
@@ -53,9 +57,13 @@ exports.login = (req, res, next) => {
                 .then(doMatch => {
                 if (doMatch) {
                     console.log('wasif is here');
-                    res.status(201).json({
-                    user: user
+                    jwt.sign({user:user},'secret1',(err,token)=>{
+                        res.status(201).json({
+                            user: user,
+                            token:token
+                            })
                     })
+                    
                 }
                 else{
                     res.status(201).json({
@@ -136,8 +144,15 @@ exports.signup = (req, res, next) => {
                 })
               }
               else{
-                  bcrypt.hash(password,12)
+
+                        bcrypt.hash(password,12)
                   .then(hashedPassowrd=>{
+                      
+                    var token;
+                    crypto.randomBytes(24, function(err, buffer) {
+                        token = buffer.toString('hex');
+                        console.log(token);
+
                     const user = new User({
                         email: email,
                         password: hashedPassowrd,
@@ -178,6 +193,8 @@ exports.signup = (req, res, next) => {
                         });
                     });
                   })
+                  });
+                  
               }
 
           }).catch(err=>{

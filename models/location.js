@@ -7,7 +7,7 @@ const location = new Schema({
     type: Object,
     required: true
   },
-  userid:{
+  ingrumCode:{
       type:String,
       required:true
   }

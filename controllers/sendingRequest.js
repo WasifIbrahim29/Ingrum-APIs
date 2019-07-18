@@ -149,7 +149,7 @@ exports.rejectRequest = async (req, res, next) => {
 }
 
 exports.sendRequestToUser = (req, res, next) => {
-    const requestToUser=req.params._id;
+    const requestToUser=req.params.ingrumCode;
     const name=req.body.name;
     const imageUrl=req.body.imageUrl;
     const ingrumCode= req.body.ingrumCode;

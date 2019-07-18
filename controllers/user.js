@@ -8,25 +8,6 @@ const mongodb= require('mongodb');
 const ObjectId= mongodb.ObjectId;
 
 exports.getUserDetails = (req, res, next) => {
-    const id = req.params._id;
-    var usersProjection = { 
-        __v: false,
-        isVerified:false
-    };
-    User.findOne({_id : new ObjectId(id)},usersProjection)
-    .then(user =>{
-        res.status(201).json({
-            user: user
-          });
-
-    })
-    .catch(err =>{
-        console.log(err);
-    });
-    // Create post in db
-  };
-
-  exports.getUserDetailsThroughCode = (req, res, next) => {
     const ingrumCode = req.params.ingrumCode;
     var usersProjection = { 
         __v: false,
@@ -74,8 +55,7 @@ exports.getSocialDetails = (req, res, next) => {
   };
 
 exports.updateUserDetails = (req, res, next) => {
-    const _id=req.params._id;
-    const ingrumCode = req.body.ingrumCode;
+    const ingrumCode=req.params.ingrumCode;
     const email = req.body.email;
     const name = req.body.name;
     const password = req.body.password;
@@ -100,7 +80,7 @@ exports.updateUserDetails = (req, res, next) => {
   
     console.log(facebook);
   
-    User.findOne({_id : _id},usersProjection)
+    User.findOne({ingrumCode : ingrumCode},usersProjection)
       .then(user =>{
           user.email=email;
           user.facebook=facebook;

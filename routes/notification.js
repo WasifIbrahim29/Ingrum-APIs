@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/postNotification/:ingrumCode', notificationController.postNotification);
 
 
-router.get('/getNotification/:_id', notificationController.getNotification);
+router.get('/getNotification/:ingrumCode', notificationController.getNotification);
 
 
 module.exports = router;

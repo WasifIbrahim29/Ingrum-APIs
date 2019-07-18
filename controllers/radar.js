@@ -17,12 +17,12 @@ const ObjectId= mongodb.ObjectId;
 var distance = require('google-distance');
 
 exports.getMyLocation = (req, res, next) => {
-    const id = req.params._id;
+    const ingrumCode = req.params.ingrumCode;
     var usersProjection = { 
         __v: false,
         _id: false
     };
-    Location.findOne({ userid : id},usersProjection)
+    Location.findOne({ ingrumCode : ingrumCode},usersProjection)
     .then(location =>{
         res.status(201).json({
             location: location
@@ -36,17 +36,17 @@ exports.getMyLocation = (req, res, next) => {
   };
 
   exports.getTheNearbyUsers= async(req,res,next)=>{
-      const id= req.params.id;
+      const ingrumCode= req.params.ingrumCode;
       var usersProjection = { 
         __v: false,
         _id: false,
-        userid:false
+        ingrumCode:false
     };
 
 
     // Step 1: Get my own location
 
-    var myLocation= await Location.findOne({userid: id},usersProjection)
+    var myLocation= await Location.findOne({ingrumCode: ingrumCode},usersProjection)
     .then(myLocation=>{
 
         return myLocation;
@@ -68,7 +68,7 @@ exports.getMyLocation = (req, res, next) => {
     otherUsers=[];
     var ifThereAreOtherUsers=false;
     await allUsers.forEach(element => {
-        if(element.userid !== id){
+        if(element.ingrumCode !== ingrumCode){
             otherUsers.push(element);
             ifThereAreOtherUsers=true;
 
@@ -105,7 +105,7 @@ exports.getMyLocation = (req, res, next) => {
             dist = dist * 1.609344 ;
             console.log('The distance is: '+ dist);
             if(dist<1){
-                myNearbyUsers.push(element.userid);
+                myNearbyUsers.push(element.ingrumCode);
                 next();
             }
 
@@ -170,17 +170,17 @@ exports.getMyLocation = (req, res, next) => {
 
 exports.postMyLocation = async (req, res, next) => {
     console.log("what is this sorcery!!!");
-    const _id=req.params._id;
+    const ingrumCode=req.params.ingrumCode;
     const geoPoint=req.body.geoPoint;
 
     console.log(geoPoint);
 
-    await Location.findOne({userid: _id})
+    await Location.findOne({ingrumCode: ingrumCode})
     .then(location =>{
         if(!location){         
             const location1 = new Location({
                 GeoPoint: geoPoint,
-                userid: _id
+                ingrumCode: ingrumCode
             });
             location1.save();
 
@@ -197,13 +197,11 @@ exports.postMyLocation = async (req, res, next) => {
     };
 
     exports.deleteMyLocation = (req, res, next) => {
-        const _id=req.params._id;
-        console.log(_id);
+        const ingrumCode=req.params.ingrumCode;
 
-        Location.findOne({userid : _id})
+        Location.findOne({ingrumCode : ingrumCode})
             .then(location =>{
-                if(location){
-                        
+                if(location){                        
                     console.log(location);
                     location.remove();
                 }
